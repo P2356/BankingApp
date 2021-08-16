@@ -9,12 +9,12 @@ public class UserVerification {
 	Boolean userVerified = false;
 
 	public UserVerification() {
-		customerList.add(new Customer(1234, "password1", 1000));
-		customerList.add(new Customer(2222, "password2", 2000));
-		customerList.add(new Customer(3322, "password3", 0));
+		customerList.add(new Customer("1234", "password1", 1000));
+		customerList.add(new Customer("2222", "password2", 2000));
+		customerList.add(new Customer("3322", "password3", 0));
 	}
 
-	public Boolean userVerificationFn(Integer accNumber, String passwrd) {
+	public Boolean userVerificationFn(String accNumber, String passwrd) {
 
 		Set<Customer> customer = customerList.stream().filter(c -> c.getAccountNumber().equals(accNumber)).collect(Collectors.toSet());
 		if(customer.size() > 0) {
@@ -36,12 +36,12 @@ public class UserVerification {
 
 
 
-	public Boolean userVerificationBasedOnAccountNum(Integer accNumber) {
+	public Boolean userVerificationBasedOnAccountNum(String receivingAccounNum) {
 
-		Set<Customer> customer = customerList.stream().filter(c -> c.getAccountNumber().equals(accNumber)).collect(Collectors.toSet());
+		Set<Customer> customer = customerList.stream().filter(c -> c.getAccountNumber().equals(receivingAccounNum)).collect(Collectors.toSet());
 		if(customer.size() > 0) {
 			customer.forEach(data -> {
-				if (data.getAccountNumber().equals(accNumber)) {
+				if (data.getAccountNumber().equals(receivingAccounNum)) {
 					userVerified = true;
 				} else {
 					userVerified = false;

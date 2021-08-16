@@ -13,18 +13,19 @@ public class BankOperations {
 	boolean append = true;
 	FileHandler fh;
 	Logger logger = Logger.getLogger("BankOperations");
+	String operationName = null;
 	Scanner sc = new Scanner(System.in);
 	Set<Customer> customerList = new HashSet<Customer>();
 	UserVerification userVerify = new UserVerification();
 	TransactionLogFile txnLogFile = new TransactionLogFile();
 
 	public BankOperations() {
-		customerList.add(new Customer(1234, "password1", 1000));
-		customerList.add(new Customer(2222, "password2", 2000));
-		customerList.add(new Customer(3322, "password3", 0));
+		customerList.add(new Customer("1234", "password1", 1000));
+		customerList.add(new Customer("2222", "password2", 2000));
+		customerList.add(new Customer("3322", "password3", 0));
 	}
 	
-	public void InitateBanking(int accNumber) {
+	public void InitateBanking(String accNumber) {
 		Scanner input = new Scanner(System.in);
 		int choice;
 		while (true) {
@@ -33,6 +34,7 @@ public class BankOperations {
 			System.out.println("1. Deposit \n");
 			System.out.println("2. Withdrawl \n");
 			System.out.println("3. Transfer \n");
+			System.out.println("4. Mini Statement \n");
 			System.out.println("0. Logout \n");
 			System.out.println("------------------------------------------");
 
@@ -59,8 +61,9 @@ public class BankOperations {
 					System.out.println("OTP verification successful!");
 					System.out.println("Enter the amount : ");
 					int transferAmt = input.nextInt();
+					Scanner sc = new Scanner(System.in);
 					System.out.println("Enter the account no to which you want to transfer: ");
-					int receivingAccounNum = input.nextInt();
+					String receivingAccounNum = sc.nextLine();
 					Boolean verifyUser = userVerify.userVerificationBasedOnAccountNum(receivingAccounNum);
 					if(verifyUser) {
 						moneyTransfer(accNumber, receivingAccounNum, transferAmt);
@@ -72,6 +75,10 @@ public class BankOperations {
 					System.out.println("Sorry! You have entered wrong OTP");
 					System.out.println();
 				}
+				break;
+				
+			case 4:
+				txnLogFile.readLogs(accNumber);
 				break;
 
 			case 0:
@@ -87,7 +94,7 @@ public class BankOperations {
 	}
 
 
-	public void amountDepositing(int accNo, int depositAmount) {
+	public void amountDepositing(String accNo, int depositAmount) {
 		customerList.stream().filter(c -> c.getAccountNumber().equals(accNo)).collect(Collectors.toList())
 				.forEach(data -> {
 					try {
@@ -97,8 +104,9 @@ public class BankOperations {
 						data.setBalance(updatedBalance);
 						customerList.add(data);
 						displayUpdatedBalance(accNo, currentBalance, updatedBalance);
-						String message = "My Deposit Transaction!  " + "\r\n";
-						txnLogFile.transactionFile(message);
+						String message = "My Deposit Transaction! ";
+						operationName = "Deposit";
+						txnLogFile.transactionFile(message,accNo,depositAmount,updatedBalance,operationName);
 
 					} catch (SecurityException e) {
 						e.printStackTrace();
@@ -110,7 +118,7 @@ public class BankOperations {
 
 	}
 
-	public void amountWithdrawing(int accNo, int withdrawlAmt) {
+	public void amountWithdrawing(String accNo, int withdrawlAmt) {
 		customerList.stream().filter(c -> c.getAccountNumber().equals(accNo)).collect(Collectors.toList())
 				.forEach(data -> {
 					try {
@@ -122,12 +130,13 @@ public class BankOperations {
 							customerList.add(data);
 							System.out.println("Amount " + withdrawlAmt + " withdrawl successfully");
 							displayUpdatedBalance(accNo, currentBalance, updatedBalance);
+							operationName = "Withdrawl";
+							String message = "My Withdrawl Transaction! ";
+							txnLogFile.transactionFile(message,accNo,withdrawlAmt,updatedBalance,operationName);
 						} else {
 							System.out.println("Sorry! Insufficient Funds");
 							System.out.println();
 						}
-						String message = "My Withdrawl Transaction! " + "\r\n";
-						txnLogFile.transactionFile(message);
 					} catch (SecurityException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -137,20 +146,13 @@ public class BankOperations {
 				});
 	}
 
-	public void moneyTransfer(int senderAccNum, int receipientAccNo, int transferAmt) {
+	public void moneyTransfer(String senderAccNum, String receipientAccNo, int transferAmt) {
 
-		try {
 			senderAccountInfo(senderAccNum, transferAmt);
 			receiverAccountInfo(receipientAccNo, transferAmt);
-			String message = "My Transfer Transaction! " + "\r\n";
-			txnLogFile.transactionFile(message);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
-	private void senderAccountInfo(int senderAccNum, int transferAmt) {
+	private void senderAccountInfo(String senderAccNum, int transferAmt) {
 		customerList.stream().filter(c -> c.getAccountNumber().equals(senderAccNum)).collect(Collectors.toList())
 				.forEach(data -> {
 					try {
@@ -161,10 +163,13 @@ public class BankOperations {
 							customerList.add(data);
 							System.out.println("Sender Account Detail - " + " " + senderAccNum + "  Previous Balance : "
 									+ " " + currentBalance + "  updatedBalance : " + " " + updatedBalance);
+							operationName = "Transfer";
+							String message = "My Transfer Transaction! ";
+							txnLogFile.transactionFile(message,senderAccNum,transferAmt,updatedBalance,operationName);
 						}else {
 							System.out.println("Sorry! Insufficient Funds");
 						}
-					} catch (SecurityException e) {
+					} catch (SecurityException | IOException e) {
 						e.printStackTrace();
 					}
 
@@ -172,7 +177,7 @@ public class BankOperations {
 
 	}
 
-	private void receiverAccountInfo(int receipientAccNo, int transferAmt) {
+	private void receiverAccountInfo(String receipientAccNo, int transferAmt) {
 		customerList.stream().filter(c -> c.getAccountNumber().equals(receipientAccNo)).collect(Collectors.toList())
 				.forEach(data -> {
 					try {
@@ -191,7 +196,7 @@ public class BankOperations {
 				});
 	}
 
-	private void displayUpdatedBalance(int accNo, int currentBalance, int updatedBalance) {
+	private void displayUpdatedBalance(String accNo, int currentBalance, int updatedBalance) {
 		System.out.println("For Account number - " + " " + accNo + " Previous Balance : " + " " + currentBalance
 				+ " updatedBalance : " + " " + updatedBalance);
 	}

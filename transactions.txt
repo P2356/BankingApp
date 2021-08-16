@@ -1,10 +1,6 @@
-My Deposit Transaction!  
-My Withdrawl Transaction! 
-My Withdrawl Transaction! 
-My Transfer Transaction! 
-My Deposit Transaction!  
-My Withdrawl Transaction! 
-My Transfer Transaction! 
-My Deposit Transaction!  
-My Withdrawl Transaction! 
-My Transfer Transaction! 
+My Deposit Transaction! Customer Info - Account Number: 1234 Deposit Amt : 200 Total Balance : 1200
+My Withdrawl Transaction! Customer Info - Account Number: 1234 Withdrawl Amt : 300 Total Balance : 900
+My Deposit Transaction! Customer Info - Account Number: 1234 Deposit Amt : 400 Total Balance : 1300
+My Deposit Transaction! Customer Info - Account Number: 2222 Deposit Amt : 100 Total Balance : 2100
+My Withdrawl Transaction! Customer Info - Account Number: 2222 Withdrawl Amt : 1000 Total Balance : 1100
+My Transfer Transaction! Customer Info - Account Number: 2222 Transfer Amt : 300 Total Balance : 800

@@ -1,21 +1,24 @@
 package com.greatlearning.BankingApp;
 
 public class Customer {
-	private Integer accountNumber;
+	private String accountNumber;
 	private String passwrd;
 	private Integer balance;
 	
-	public Customer(Integer accountNumber, String passwrd, Integer balance) {
+	public Customer(String accountNumber, String passwrd, Integer balance) {
 		this.accountNumber = accountNumber;
 		this.passwrd = passwrd;
 		this.balance = balance;
 	}
-	public Integer getAccountNumber() {
+	
+	public String getAccountNumber() {
 		return accountNumber;
 	}
-	public void setAccountNumber(Integer accountNumber) {
+
+	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
+
 	public String getPasswrd() {
 		return passwrd;
 	}

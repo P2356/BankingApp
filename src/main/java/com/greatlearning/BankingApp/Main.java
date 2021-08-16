@@ -13,10 +13,10 @@ public class Main {
     do { 
     	Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the Bank account number - ");
-		int accNumber = sc.nextInt();
-		Scanner scanner = new Scanner(System.in);
+		String accNumber = sc.nextLine();
+//		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter the password -  ");
-		String passwrd = scanner.nextLine();
+		String passwrd = sc.nextLine();
 		
 		BankOperations bankOperation = new BankOperations();
 		UserVerification userVerify = new UserVerification();
